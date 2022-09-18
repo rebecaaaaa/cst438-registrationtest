@@ -48,9 +48,10 @@ import org.junit.jupiter.api.Test;
 class JunitTestStudent {
 	
 	static final String URL = "http://localhost:8080";
-	public static final String TEST_STUDENT_EMAIL = "test100@csumb.edu";
-	public static final String TEST_STUDENT_NAME  = "test100";
+	public static final String TEST_STUDENT_EMAIL = "unitTest@csumb.edu";
+	public static final String TEST_STUDENT_NAME  = "unitTest";
 	public static final int TEST_YEAR = 2021;
+	public static final int TEST_STUDENT_ID = 12345;
 	public static final String TEST_SEMESTER = "Fall";
 	
 	@MockBean
@@ -78,20 +79,22 @@ class JunitTestStudent {
 		
 		Student student = new Student();
 		student.setEmail(TEST_STUDENT_EMAIL);
+		student.setStudent_id(TEST_STUDENT_ID);
 		student.setName(TEST_STUDENT_NAME);
-		student.setStatus(null);
-		student.setStatusCode(0);
+//		student.setStatus(null);
+//		student.setStatusCode(0);
 	
 		
 		// given  -- stubs for database repositories that return test data
 		
-		given(studentRepository.findByEmail(TEST_STUDENT_EMAIL)).willReturn(student);
+//		given(studentRepository.findByEmail(TEST_STUDENT_EMAIL)).willReturn(student);
+		given(studentRepository.save(any(Student.class))).willReturn(student);
 		
 		// create the DTO (data transfer object) for the admin to add student.  
 		
 		StudentDTO studentDTO = new StudentDTO();
 		studentDTO.email = TEST_STUDENT_EMAIL;
-		studentDTO.name = TEST_STUDENT_NAME;
+		studentDTO.name = TEST_STUDENT_NAME; 
 		
 		
 		// then do an http post request with body of StudentDTO as JSON
@@ -108,7 +111,7 @@ class JunitTestStudent {
 		
 		// verify that returned data has non zero primary key
 		StudentDTO result = fromJsonString(response.getContentAsString(), StudentDTO.class);
-		assertNotEquals( 0  , result.email);
+		assertNotEquals(0  , result.student_id);
 				
 		// verify that repository save method was called.
 		verify(studentRepository).save(any(Student.class));
@@ -129,24 +132,28 @@ class JunitTestStudent {
 		student.setEmail(TEST_STUDENT_EMAIL);
 		student.setName(TEST_STUDENT_NAME);
 		student.setStatus(null);
-		student.setStatusCode(0);
+//		student.setStatusCode(0);
 	
 		
 		// given  -- stubs for database repositories that return test data
 		
 		given(studentRepository.findByEmail(TEST_STUDENT_EMAIL)).willReturn(student);
 		
+//		given(studentRepository.save(any(Student.class))).willReturn(student);
+		
 		// create the DTO (data transfer object) for the admin to add student.  
 		
 		StudentDTO studentDTO = new StudentDTO();
 		studentDTO.email = TEST_STUDENT_EMAIL;
 		studentDTO.name = TEST_STUDENT_NAME;
+//		studentDTO.statusCode = 0; 
+		
 		
 		
 		// then do an http post request with body of StudentDTO as JSON
 		response = mvc.perform(
 				MockMvcRequestBuilders
-			      .post("/student/putHold/{TEST_STUDENT_EMAIL}")
+			      .post("/student/putHold/unitTest@csumb.edu")
 			      .content(asJsonString(studentDTO))
 			      .contentType(MediaType.APPLICATION_JSON)
 			      .accept(MediaType.APPLICATION_JSON))
@@ -156,11 +163,19 @@ class JunitTestStudent {
 		assertEquals(200, response.getStatus());
 		
 		// verify that returned data has non zero primary key
-		StudentDTO result = fromJsonString(response.getContentAsString(), StudentDTO.class);
-		assertNotEquals( 0  , result.email);
+
+//		assertNotEquals(0, studentDTO.student_id);
 				
-		// verify that repository save method was called.
-		verify(studentRepository).save(any(Student.class));
+		// verify that repository findByEmail method was called.
+		verify(studentRepository, times(1)).findByEmail(TEST_STUDENT_EMAIL);
+		
+		// verify status code is now equal to 1
+		
+		boolean found = false;		
+		if (student.getStatusCode() == 1) {
+			found = true;
+		}
+		assertEquals(true, found, "Status code is now 1");
 		
 		
 		
@@ -178,12 +193,14 @@ class JunitTestStudent {
 		student.setEmail(TEST_STUDENT_EMAIL);
 		student.setName(TEST_STUDENT_NAME);
 		student.setStatus(null);
-		student.setStatusCode(0);
+		student.setStatusCode(1);
 	
 		
 		// given  -- stubs for database repositories that return test data
 		
 		given(studentRepository.findByEmail(TEST_STUDENT_EMAIL)).willReturn(student);
+		
+//		given(studentRepository.save(any(Student.class))).willReturn(student);
 		
 		// create the DTO (data transfer object) for the admin to add student.  
 		
@@ -195,7 +212,7 @@ class JunitTestStudent {
 		// then do an http post request with body of StudentDTO as JSON
 		response = mvc.perform(
 				MockMvcRequestBuilders
-			      .post("/student/releaseHold/{TEST_STUDENT_EMAIL}")
+			      .post("/student/releaseHold/unitTest@csumb.edu")
 			      .content(asJsonString(studentDTO))
 			      .contentType(MediaType.APPLICATION_JSON)
 			      .accept(MediaType.APPLICATION_JSON))
@@ -205,11 +222,17 @@ class JunitTestStudent {
 		assertEquals(200, response.getStatus());
 		
 		// verify that returned data has non zero primary key
-		StudentDTO result = fromJsonString(response.getContentAsString(), StudentDTO.class);
-		assertNotEquals( 0  , result.email);
+//		assertNotEquals(0, studentDTO.student_id);
 				
-		// verify that repository save method was called.
-		verify(studentRepository).save(any(Student.class));
+		// verify that repository findByEmail method was called.
+		verify(studentRepository, times(1)).findByEmail(TEST_STUDENT_EMAIL);
+		
+		// verify status code is now equal to 0
+		boolean found = false;		
+		if (student.getStatusCode() == 0) {
+			found = true;
+		}
+		assertEquals(true, found, "Status code is now 0");
 		
 		
 		
