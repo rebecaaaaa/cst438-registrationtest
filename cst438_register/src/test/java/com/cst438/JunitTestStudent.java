@@ -81,13 +81,10 @@ class JunitTestStudent {
 		student.setEmail(TEST_STUDENT_EMAIL);
 		student.setStudent_id(TEST_STUDENT_ID);
 		student.setName(TEST_STUDENT_NAME);
-//		student.setStatus(null);
-//		student.setStatusCode(0);
-	
 		
 		// given  -- stubs for database repositories that return test data
 		
-//		given(studentRepository.findByEmail(TEST_STUDENT_EMAIL)).willReturn(student);
+
 		given(studentRepository.save(any(Student.class))).willReturn(student);
 		
 		// create the DTO (data transfer object) for the admin to add student.  
@@ -132,23 +129,16 @@ class JunitTestStudent {
 		student.setEmail(TEST_STUDENT_EMAIL);
 		student.setName(TEST_STUDENT_NAME);
 		student.setStatus(null);
-//		student.setStatusCode(0);
 	
-		
 		// given  -- stubs for database repositories that return test data
 		
 		given(studentRepository.findByEmail(TEST_STUDENT_EMAIL)).willReturn(student);
-		
-//		given(studentRepository.save(any(Student.class))).willReturn(student);
 		
 		// create the DTO (data transfer object) for the admin to add student.  
 		
 		StudentDTO studentDTO = new StudentDTO();
 		studentDTO.email = TEST_STUDENT_EMAIL;
-		studentDTO.name = TEST_STUDENT_NAME;
-//		studentDTO.statusCode = 0; 
-		
-		
+		studentDTO.name = TEST_STUDENT_NAME; 
 		
 		// then do an http post request with body of StudentDTO as JSON
 		response = mvc.perform(
@@ -161,10 +151,6 @@ class JunitTestStudent {
 		
 		// verify that return status = OK (value 200) 
 		assertEquals(200, response.getStatus());
-		
-		// verify that returned data has non zero primary key
-
-//		assertNotEquals(0, studentDTO.student_id);
 				
 		// verify that repository findByEmail method was called.
 		verify(studentRepository, times(1)).findByEmail(TEST_STUDENT_EMAIL);
@@ -200,8 +186,6 @@ class JunitTestStudent {
 		
 		given(studentRepository.findByEmail(TEST_STUDENT_EMAIL)).willReturn(student);
 		
-//		given(studentRepository.save(any(Student.class))).willReturn(student);
-		
 		// create the DTO (data transfer object) for the admin to add student.  
 		
 		StudentDTO studentDTO = new StudentDTO();
@@ -220,9 +204,6 @@ class JunitTestStudent {
 		
 		// verify that return status = OK (value 200) 
 		assertEquals(200, response.getStatus());
-		
-		// verify that returned data has non zero primary key
-//		assertNotEquals(0, studentDTO.student_id);
 				
 		// verify that repository findByEmail method was called.
 		verify(studentRepository, times(1)).findByEmail(TEST_STUDENT_EMAIL);

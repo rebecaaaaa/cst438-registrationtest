@@ -47,7 +47,7 @@ public class StudentController {
 		
 		Student studentInfo = studentRepository.findByEmail(studentDTO.email); 
 		
-		if (studentInfo == null) {
+		if (studentInfo == null) { 
 			
 			Student student = new Student(); 
 			
@@ -56,17 +56,12 @@ public class StudentController {
 			student.setEmail(studentDTO.email); 
 			student.setName(studentDTO.name); 
 			
-			System.out.println("new student: " + student);
 			
 			// save your sets
 			
 			Student newStudent = studentRepository.save(student); 
 			
-			System.out.println("saved student: " + newStudent);
-			
 			StudentDTO result = createStudentDTO(newStudent); 
-			
-			System.out.print(result); 
 			
 			return result; 
 					
@@ -86,15 +81,13 @@ public class StudentController {
 		
 		Student student = studentRepository.findByEmail(email);
 		
-		System.out.println("Student to be put on hold:" + student); 
-		
 		if (student != null && student.getStatusCode() == 0) {
 			student.setStatusCode(1);
-			System.out.println("Student: " + student + " Hold on student with email " + email + " placed successfully"); 
+			System.out.println("Hold on student with email " + email + " placed successfully"); 
 			
 		}
 		else {
-			throw  new ResponseStatusException( HttpStatus.BAD_REQUEST, "Student: " + student +  " The hold on student with email "+ email + " unsuccessful");
+			throw  new ResponseStatusException( HttpStatus.BAD_REQUEST, "The hold on student with email "+ email + " unsuccessful");
 			
 		}
 			
@@ -111,16 +104,13 @@ public class StudentController {
 		
 		if (student != null && student.getStatusCode() != 0) {
 			student.setStatusCode(0);
-			System.out.println("Student: " + student + "Hold on student with email " + email + " released successfully"); 
+			System.out.println("Hold on student with email " + email + " released successfully"); 
 			
 		}
 		else {
 			throw  new ResponseStatusException( HttpStatus.BAD_REQUEST, "The release hold on student with email "+ email + " has been unsuccessful");
 		}
 	}
-	
-	
-
 	
 	
 	private boolean emailExists(String email) {
