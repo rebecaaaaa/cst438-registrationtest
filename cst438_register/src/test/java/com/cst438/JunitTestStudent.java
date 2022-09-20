@@ -82,6 +82,8 @@ class JunitTestStudent {
 		student.setStudent_id(TEST_STUDENT_ID);
 		student.setName(TEST_STUDENT_NAME);
 		
+		
+		
 		// given  -- stubs for database repositories that return test data
 		
 
@@ -97,7 +99,7 @@ class JunitTestStudent {
 		// then do an http post request with body of StudentDTO as JSON
 		response = mvc.perform(
 				MockMvcRequestBuilders
-			      .post("/student")
+			      .put("/student")
 			      .content(asJsonString(studentDTO))
 			      .contentType(MediaType.APPLICATION_JSON)
 			      .accept(MediaType.APPLICATION_JSON))
@@ -133,6 +135,7 @@ class JunitTestStudent {
 		// given  -- stubs for database repositories that return test data
 		
 		given(studentRepository.findByEmail(TEST_STUDENT_EMAIL)).willReturn(student);
+		given(studentRepository.save(any(Student.class))).willReturn(student);
 		
 		// create the DTO (data transfer object) for the admin to add student.  
 		
@@ -143,7 +146,7 @@ class JunitTestStudent {
 		// then do an http post request with body of StudentDTO as JSON
 		response = mvc.perform(
 				MockMvcRequestBuilders
-			      .post("/student/putHold/unitTest@csumb.edu")
+			      .put("/student/putHold/unitTest@csumb.edu")
 			      .content(asJsonString(studentDTO))
 			      .contentType(MediaType.APPLICATION_JSON)
 			      .accept(MediaType.APPLICATION_JSON))
@@ -185,6 +188,7 @@ class JunitTestStudent {
 		// given  -- stubs for database repositories that return test data
 		
 		given(studentRepository.findByEmail(TEST_STUDENT_EMAIL)).willReturn(student);
+		given(studentRepository.save(any(Student.class))).willReturn(student);
 		
 		// create the DTO (data transfer object) for the admin to add student.  
 		
@@ -196,7 +200,7 @@ class JunitTestStudent {
 		// then do an http post request with body of StudentDTO as JSON
 		response = mvc.perform(
 				MockMvcRequestBuilders
-			      .post("/student/releaseHold/unitTest@csumb.edu")
+			      .put("/student/releaseHold/unitTest@csumb.edu")
 			      .content(asJsonString(studentDTO))
 			      .contentType(MediaType.APPLICATION_JSON)
 			      .accept(MediaType.APPLICATION_JSON))
