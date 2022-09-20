@@ -39,15 +39,25 @@ public class StudentController {
 	@Autowired
 	StudentRepository studentRepository;
 	
-	@PostMapping("/student") 
+	@PutMapping("/student") 
 	@Transactional 
-	public StudentDTO addStudent(@RequestBody StudentDTO studentDTO) {
+	public StudentDTO addStudent(@RequestBody StudentDTO studentDTO, String myAdmin) {
 		
 		// FIRST: check if email exists in system already BEFORE you add a student
 		
 		Student studentInfo = studentRepository.findByEmail(studentDTO.email); 
 		
-		if (studentInfo == null) { 
+		String adminEmail = "adminEmail@csumb.edu"; 
+		
+		myAdmin = "adminEmail@csumb.edu";
+		
+		boolean isAdmin = emailIsAdmin(adminEmail, myAdmin); // check if the admin is actually admin (hard coded for now)
+		
+		if (isAdmin==false) {
+			throw  new ResponseStatusException( HttpStatus.BAD_REQUEST, "The email "+ myAdmin + " is not an administrator.");	
+		}
+		
+		if (studentInfo == null && (isAdmin==true)) { 
 			
 			Student student = new Student(); 
 			
@@ -63,6 +73,8 @@ public class StudentController {
 			
 			StudentDTO result = createStudentDTO(newStudent); 
 			
+			System.out.println("Student with email " + studentDTO.email + " added successfully"); 
+			
 			return result; 
 					
 			
@@ -75,7 +87,7 @@ public class StudentController {
 		
 	}
 	
-	@PostMapping("/student/putHold/{email}") 
+	@PutMapping("/student/putHold/{email}") 
 	@Transactional 
 	public void putHold(@PathVariable String email) {
 		
@@ -96,7 +108,7 @@ public class StudentController {
 	
 	
 	
-	@PostMapping("/student/releaseHold/{email}") 
+	@PutMapping("/student/releaseHold/{email}") 
 	@Transactional	
 	public void releaseHold(@PathVariable String email) {
 		
@@ -113,12 +125,11 @@ public class StudentController {
 	}
 	
 	
-	private boolean emailExists(String email) {
-		Student student = studentRepository.findByEmail(email); 
-		if (student !=null) {
-			return false; 
+	private boolean emailIsAdmin(String email, String adminEmail) { 
+		if (email.equals(adminEmail)) {
+			return true; 
 		}
-		return true; 
+		return false; 
 	}
 	
 	
