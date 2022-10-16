@@ -39,7 +39,7 @@ public class StudentController {
 	@Autowired
 	StudentRepository studentRepository;
 	
-	@PutMapping("/student") 
+	@PostMapping("/student") 
 	@Transactional 
 	public StudentDTO addStudent(@RequestBody StudentDTO studentDTO, String myAdmin) {
 		
@@ -49,7 +49,7 @@ public class StudentController {
 		
 		String adminEmail = "adminEmail@csumb.edu"; 
 		
-		myAdmin = "adminEmail@csumb.edu";
+		myAdmin = "adminEmail@csumb.edu"; // hardcoded email
 		
 		boolean isAdmin = emailIsAdmin(adminEmail, myAdmin); // check if the admin is actually admin (hard coded for now)
 		
@@ -125,7 +125,7 @@ public class StudentController {
 	}
 	
 	
-	private boolean emailIsAdmin(String email, String adminEmail) { 
+	private boolean emailIsAdmin(String email, String adminEmail) { // method to check admin email 
 		if (email.equals(adminEmail)) {
 			return true; 
 		}
